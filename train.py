@@ -66,7 +66,7 @@ def get_or_build_tokenizer(config,ds,lang):
   else:
     tokenizer = Tokenizer.from_file(str(tokenizer_path))
 
-return tokenizer
+  return tokenizer
 
 def get_ds(config):
 
@@ -78,5 +78,28 @@ def get_ds(config):
   val_ds_size = len(ds_raw) - train_ds_size
   train_ds_raw,val_ds_raw = random_split(ds_raw, [train_ds_size,val_ds_size])
 
-  train_ds = BillingualDataset(train_ds_raw,tokenizer_src,tokenizer_tgt,config['lang_src']
+  train_ds = BillingualDataset(train_ds_raw,tokenizer_src,tokenizer_tgt,config['lang_src'],config['lang_tgt'])
+  val_ds = BillingualDataset(val_ds_raw,tokenizer_src,tokenizer_tgt,config['lang_src'],config['lang_tgt'])
+
+  max_len_src = 0
+  max_len_tgt = 0
+
+  for item in ds_raw:
+    src_ids = tokenizer_src.encode(item['translation'][config['lang_src']]).ids
+    tgt_ids = tokenizer_src.encode(item['translation'][config['lang_tgt']]).ids
+    max_len_src = max(max_len_src,len(src_ids))
+    max_len_tgt = max(max_len_tgt,len(tgt_ids))
+
+  train_dataloader = DataLoader(train_ds,batch_size=config['batch_size'],shuffle=True)
+  val_dataloader = DataLoader(val_ds,batch_size=1,shuffle=True)
+
+  return train_dataloader,val_dataloader,tokenizer_src,tokenizer_tgt
+
+def get_model(config,vocab_src_len,vocab_tgt_len):
+  model = build_transformer(vocab_src_len,vocab_tgt_len,config['seq_len'],config['seq_len'],d_model=config['d_model'])
+  return model
+s
+
+
+  
    
