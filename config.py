@@ -7,7 +7,7 @@ def get_config():
     "lr":10**-4,
     "seq_len":350,
     "d_model":512,
-    "lang_src':"en",
+    "lang_src":"en",
     "lang_tgt":"it",
     "model_folder":"weights",
     "model_basename":"tmodel_",
