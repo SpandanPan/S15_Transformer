@@ -1,5 +1,5 @@
-from model import build_transformer
 from dataset import BilingualDataset, causal_mask
+from model import build_transformer
 from config import get_config,get_weights_file_path
 
 import torchtxt.datasets as datasets
@@ -218,7 +218,10 @@ torch.save({
   'global_step':global_step
 }, model_filename)
 
-
+if __name__ == 'main':
+  warnings.filterwarnings("ignore")
+  config=get_config()
+  train_model(config)
 
   
    
